@@ -1,100 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Matrix Effect</title>
-    <style>
-      * {margin: 0; padding: 0;}
-      body {background: #000; overflow: hidden;} /* Hide scrollbars */
-      canvas {display: block;}
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pritam Gyawali - Computer Engineer</title>
 </head>
 <body>
-
-<canvas></canvas>
-
+<canvas id="matrix-bg"></canvas>
+<div id="root"></div>
+<script type="module" src="/src/main.tsx"></script>
 <script>
-  var canvas = document.querySelector('canvas'),
-      ctx = canvas.getContext('2d');
-
-  // Set canvas size to fill the window
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  // The phrase to cycle through
-  var phrase = 'HAPPY BIRTHDAY POOKIE ';
-  var letters = phrase.split('');
-
-  // Font size and number of columns
-  var fontSize = 20,
-      columns = Math.floor(canvas.width / fontSize);
-
-  // Vertical spacing between letters in a single drop
-  var verticalSpacing = fontSize * 1.5;
-
-  // drops[i] is the y-coordinate index of the bottom-most letter in column i
-  // letterIndexPerColumn[i] is the index into the 'letters' array for the next letter to be drawn in column i
-  var drops = [];
-  var letterIndexPerColumn = []; 
-  for (var i = 0; i < columns; i++) {
-    drops[i] = 1;
-    letterIndexPerColumn[i] = 0; 
-  }
-
-  // Set font style
-  ctx.font = fontSize + 'px monospace';
-
-  function draw() {
-    
-    // Translucent black background to create the fading effect
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    for (var i = 0; i < drops.length; i++) {
-      
-      // Get the current letter for this column
-      var text = letters[letterIndexPerColumn[i]];
-
-      // Set the color to pink
-      ctx.fillStyle = '#ff69b4';
-
-      // Draw the letter at its calculated position
-      ctx.fillText(text, i * fontSize, drops[i] * verticalSpacing);
-
-      // Move the drop down (increase y-coordinate index)
-      drops[i] += 0.65;
-
-      // Move to the next letter in the phrase for the next frame
-      letterIndexPerColumn[i] = (letterIndexPerColumn[i] + 1) % letters.length;
-
-      // If the drop is off the screen (y-coordinate * spacing > canvas height) and a random condition is met
-      if (drops[i] * verticalSpacing > canvas.height && Math.random() > 0.95) {
-        // Reset the drop to the top
-        drops[i] = 0;
-        // Start from the beginning of the phrase again for this column
-        letterIndexPerColumn[i] = 0; 
-      }
-    }
-  }
-
-  // Run the draw function repeatedly every 33 milliseconds (approx 30 frames per second)
-  setInterval(draw, 33);
-
-  // Optional: Handle window resize to keep the effect responsive
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    columns = Math.floor(canvas.width / fontSize);
-    drops.length = columns;
-    letterIndexPerColumn.length = columns;
-    for (var i = 0; i < columns; i++) {
-        if (drops[i] === undefined) drops[i] = 1;
-        if (letterIndexPerColumn[i] === undefined) letterIndexPerColumn[i] = 0;
-    }
-  });
-
+(function() {
+var canvas = document.getElementById('matrix-bg');
+var ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var fontSize = 16;
+var columns = Math.floor(canvas.width / fontSize);
+var verticalSpacing = fontSize * 1.5;
+var drops = [];
+for (var i = 0; i < columns; i++) { drops[i] = Math.random() * -100; }
+ctx.font = fontSize + 'px monospace';
+function draw() {
+ctx.fillStyle = 'rgba(0, 5, 15, 0.08)';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+for (var i = 0; i < drops.length; i++) {
+var text = Math.random() > 0.5 ? '1' : '0';
+var brightness = Math.random();
+if (brightness > 0.95) {
+ctx.fillStyle = '#00d4ff';
+ctx.shadowColor = '#00d4ff';
+ctx.shadowBlur = 15;
+} else if (brightness > 0.8) {
+ctx.fillStyle = '#0099cc';
+ctx.shadowColor = '#0099cc';
+ctx.shadowBlur = 8;
+} else {
+ctx.fillStyle = 'rgba(0, 120, 200, 0.5)';
+ctx.shadowColor = 'transparent';
+ctx.shadowBlur = 0;
+}
+ctx.fillText(text, i * fontSize, drops[i] * verticalSpacing);
+drops[i] += 0.325;
+if (drops[i] * verticalSpacing > canvas.height && Math.random() > 0.97) { drops[i] = 0; }
+}
+ctx.shadowBlur = 0;
+}
+setInterval(draw, 33);
+window.addEventListener('resize', function() {
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+columns = Math.floor(canvas.width / fontSize);
+drops.length = columns;
+for (var i = 0; i < columns; i++) { if (drops[i] === undefined) drops[i] = Math.random() * -100; }
+});
+})();
 </script>
-
 </body>
 </html>
